@@ -25,9 +25,19 @@ class BossTickCounterPanel extends OverlayPanel {
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        // Only draw the panel if the boss has spawned and the counter is running
-        if (!plugin.isBossSpawned()) {
-            return null;
+        // The panel's content will change based on the selected mode
+        if (config.mode() == ExampleConfig.OperatingMode.TICK_TIMER) {
+            renderTickTimerInfo();
+        } else if (config.mode() == ExampleConfig.OperatingMode.SEQUENCE_SOLVER) {
+            renderSequenceSolverInfo();
+        }
+
+        return super.render(graphics);
+    }
+
+    private void renderTickTimerInfo() {
+        if (!plugin.isTickTimerActive()) {
+            return; // Don't draw if the timer isn't running
         }
 
         panelComponent.getChildren().add(TitleComponent.builder()
@@ -39,7 +49,37 @@ class BossTickCounterPanel extends OverlayPanel {
                 .left("Tick:")
                 .right(String.valueOf(plugin.getTickCounter()))
                 .build());
+    }
 
-        return super.render(graphics);
+    private void renderSequenceSolverInfo() {
+        if (!plugin.isSolverActive()) {
+            return; // Don't draw if the solver isn't running
+        }
+
+        panelComponent.getChildren().add(TitleComponent.builder()
+                .text("Sequence Solver")
+                .color(Color.ORANGE)
+                .build());
+
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Cycle Tick:")
+                .right(String.valueOf(plugin.getTickCounter()))
+                .build());
+
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Set:")
+                .right(String.valueOf(plugin.getCurrentSet()))
+                .build());
+
+        String pattern = plugin.getCurrentPattern() != null ? plugin.getCurrentPattern() + plugin.getCurrentSet() : "Detecting...";
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Pattern:")
+                .right(pattern)
+                .build());
+
+        panelComponent.getChildren().add(LineComponent.builder()
+                .left("Step:")
+                .right(String.valueOf(plugin.getStepInSet()))
+                .build());
     }
 }
