@@ -33,7 +33,7 @@ public interface ExampleConfig extends Config
 			position = 1
 	)
 	default int npcId() {
-		return 0;
+		return 14176;
 	}
 
 	@ConfigItem(
@@ -43,7 +43,7 @@ public interface ExampleConfig extends Config
 			position = 2
 	)
 	default boolean useComplexTriggerForTimer() {
-		return false;
+		return true;
 	}
 
 	@ConfigItem(
@@ -54,7 +54,7 @@ public interface ExampleConfig extends Config
 	)
 	@Range(min = -1000, max = 1000)
 	default int startingTick() {
-		return 1;
+		return -18;
 	}
 
 	@ConfigItem(
@@ -64,7 +64,7 @@ public interface ExampleConfig extends Config
 			position = 3
 	)
 	default int cycleLength() {
-		return 0;
+		return 70;
 	}
 
 	@ConfigItem(
@@ -74,7 +74,20 @@ public interface ExampleConfig extends Config
 			position = 4
 	)
 	default String tileAndTickData() {
-		return "";
+		return "1,1511,10079,0;\n" +
+				"3,1509,10077,0;\n" +
+				"7,1511,10079,0;\n" +
+				"9,1509,10079,0;\n" +
+				"10,1511,10077,0;\n" +
+				"12,1510,10078,0;\n" +
+				"15,1508,10082,0;\n" +
+				"17,1504,10082,0;\n" +
+				"21,1506,10080,0;\n" +
+				"23,1504,10078,0;\n" +
+				"24,1503,10073,0;\n" +
+				"64,1506,10073,0;\n" +
+				"65,1508,10075,0;\n" +
+				"67,1511,10079,0;";
 	}
 
 	// --- SETTINGS FOR SEQUENCE_SOLVER MODE ---
@@ -96,7 +109,7 @@ public interface ExampleConfig extends Config
 			position = 6
 	)
 	default String sequenceDelays() {
-		return "{V1,4,4,4,4,2},{H1,4,4,4,4,2},{V2,4,4,3,2},{H2,4,4,3,2},{V3,4,4,4,4},{H3,4,4,4,4}"; // e.g., "{V1,2,3,0,2},{H1,4,4,4,4}"
+		return "{V1,2,3,3,2,2,1,4},{V2,2,3,1,1,1,3,1,2},{V3,3,3,3,3,4},{H1,2,3,3,3,2,1,4},{H2,2,3,2,1,2,4,1,4},{H3,2,3,3,3,4}"; // e.g., "{V1,2,3,0,2},{H1,4,4,4,4}"
 	}
 
 	@ConfigItem(
@@ -116,7 +129,7 @@ public interface ExampleConfig extends Config
 			position = 11
 	)
 	default boolean linkPrayerHelperToSolver() {
-		return false;
+		return true;
 	}
 
 	@Range(
@@ -130,6 +143,6 @@ public interface ExampleConfig extends Config
 			position = 12
 	)
 	default int prayerHelperFontSize() {
-		return 16; // Default font size
+		return 24; // Default font size
 	}
 }

@@ -214,7 +214,7 @@ public class ExamplePlugin extends Plugin {
 
 		if (shouldCountHands) {
 			// We only care about the hands if a main boss is present
-			boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == 14176);
+			boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == config.npcId());
 			if (leviathanPresent && event.getNpc().getId() == 14180) {
 				handsSpawnedCounter++;
 				sendChatMessage("Hand spawned. Total count: {}" + handsSpawnedCounter);
@@ -325,7 +325,7 @@ public class ExamplePlugin extends Plugin {
 
 		// --- THIS IS THE NEW LOGIC ---
 		// On every tick that the timer IS active, we check if the boss is still present.
-		boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == 14176);
+		boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == config.npcId());
 		if (!leviathanPresent) {
 			// If the boss is gone, reset everything and stop.
 			sendChatMessage("Yama not found. Resetting all modes.");
@@ -383,7 +383,7 @@ public class ExamplePlugin extends Plugin {
 
 	private void handleSolverGameTick() {
 		// Master "OFF Switch" to reset everything if the boss disappears
-		boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == 14176);
+		boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == config.npcId());
 		if (!leviathanPresent) {
 			if (solverActive || isReadyForSequence) {
 				sendChatMessage("Leviathan not found. Resetting solver state.");
