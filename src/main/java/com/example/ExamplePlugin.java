@@ -80,9 +80,9 @@ public class ExamplePlugin extends Plugin {
 	private int instancedEndX = -1;
 
 	private static final WorldPoint METEOR_TRIGGER_1 = new WorldPoint(1511, 10082, 0);
-	private static final WorldPoint HIGHLIGHT_TARGET_1 = new WorldPoint(1510, 10077, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_1 = new WorldPoint(1509, 10078, 0);
 	private static final WorldPoint METEOR_TRIGGER_2 = new WorldPoint(1514, 10079, 0);
-	private static final WorldPoint HIGHLIGHT_TARGET_2 = new WorldPoint(1509, 10078, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_2 = new WorldPoint(1510, 10077, 0);
 
 	private int handsSpawnedCounter = 0;
 	private boolean isReadyForSequence = false;
