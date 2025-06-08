@@ -54,6 +54,21 @@ public class ExamplePlugin extends Plugin {
 	private int ticksUntilPrayerSwitch = -1;
 	private int prayerOverlayMaxTicks = -1;
 
+	// A small helper class to manage highlights that should appear after a delay
+	private static class DelayedHighlight {
+		private final WorldPoint point;
+		private int ticksUntilHighlight;
+
+		DelayedHighlight(WorldPoint point, int delay) {
+			this.point = point;
+			this.ticksUntilHighlight = delay;
+		}
+
+		public int tick() {
+			return --ticksUntilHighlight;
+		}
+	}
+
 	// --- State for BOTH modes ---
 	@Getter private final List<HighlightedTile> highlightedTiles = new ArrayList<>();
 
@@ -83,6 +98,8 @@ public class ExamplePlugin extends Plugin {
 	private static final WorldPoint HIGHLIGHT_TARGET_1 = new WorldPoint(1509, 10078, 0);
 	private static final WorldPoint METEOR_TRIGGER_2 = new WorldPoint(1514, 10079, 0);
 	private static final WorldPoint HIGHLIGHT_TARGET_2 = new WorldPoint(1510, 10077, 0);
+	private static final WorldPoint DELAYED_HIGHLIGHT_TARGET = new WorldPoint(1511, 10079, 0);
+	private final List<DelayedHighlight> pendingHighlights = new ArrayList<>();
 
 	private int handsSpawnedCounter = 0;
 	private boolean isReadyForSequence = false;
@@ -170,6 +187,7 @@ public class ExamplePlugin extends Plugin {
 		prayerOverlayMaxTicks = -1;
 		handsSpawnedCounter = 0;
 		isReadyForSequence = false;
+		pendingHighlights.clear();
 	}
 
 	// --- EVENT ROUTERS ---
@@ -237,24 +255,29 @@ public class ExamplePlugin extends Plugin {
 
 		// --- NEW, SIMPLER UNCONDITIONAL LOGIC ---
 		if (go.getId() == METEOR_GRAPHICS_ID) {
-			// Get the full WorldPoint of the spawned meteor inside the instance
 			WorldPoint spawnedLocation = WorldPoint.fromLocalInstance(client, go.getLocation());
-			WorldPoint targetToHighlight = null;
+			if (spawnedLocation == null) return;
 
-			// Directly compare the spawned location to your specified instance coordinates
+			WorldPoint immediateTarget = null;
+			int delay = -1;
+
 			if (spawnedLocation.equals(METEOR_TRIGGER_1)) {
-				targetToHighlight = HIGHLIGHT_TARGET_1;
+				immediateTarget = HIGHLIGHT_TARGET_1;
+				delay = 4; // Set a 2-tick delay for the second highlight
 			} else if (spawnedLocation.equals(METEOR_TRIGGER_2)) {
-				targetToHighlight = HIGHLIGHT_TARGET_2;
+				immediateTarget = HIGHLIGHT_TARGET_2;
+				delay = 5; // Set a 3-tick delay for the second highlight
 			}
 
-			if (targetToHighlight != null) {
-				// If we have a match, the target coordinate is already correct.
-				// No translation is needed. Just add the highlight.
-				Collection<WorldPoint> instancedPoints = WorldPoint.toLocalInstance(client, targetToHighlight);
+			if (immediateTarget != null) {
+				// Highlight the first tile immediately
+				Collection<WorldPoint> instancedPoints = WorldPoint.toLocalInstance(client, immediateTarget);
 				for (WorldPoint instancedPoint : instancedPoints) {
 					highlightedTiles.add(new HighlightedTile(instancedPoint));
 				}
+
+				// Schedule the second highlight to appear after the delay
+				pendingHighlights.add(new DelayedHighlight(DELAYED_HIGHLIGHT_TARGET, delay));
 			}
 		}
 
@@ -266,6 +289,21 @@ public class ExamplePlugin extends Plugin {
 
 	@Subscribe
 	public void onGameTick(GameTick event) {
+		// Use an iterator to safely remove items while looping
+		Iterator<DelayedHighlight> iterator = pendingHighlights.iterator();
+		while (iterator.hasNext()) {
+			DelayedHighlight pending = iterator.next();
+			if (pending.tick() <= 0) {
+				// Timer is up, highlight the tile now
+				Collection<WorldPoint> instancedPoints = WorldPoint.toLocalInstance(client, pending.point);
+				for (WorldPoint instancedPoint : instancedPoints) {
+					highlightedTiles.add(new HighlightedTile(instancedPoint));
+				}
+				// Remove it from the list so it doesn't fire again
+				iterator.remove();
+			}
+		}
+
 		// --- PRAYER HELPER LOGIC ---
 		// First, handle the 25-tick max lifetime timer
 		if (prayerOverlayMaxTicks > 0) {
