@@ -81,5 +81,9 @@ class BossTickCounterPanel extends OverlayPanel {
                 .left("Step:")
                 .right(String.valueOf(plugin.getStepInSet()))
                 .build());
+
+        panelComponent.getChildren().add(LineComponent.builder().left("3266 Count:").right(String.valueOf(plugin.getCount3266())).build());
+        panelComponent.getChildren().add(LineComponent.builder().left("3265 Count:").right(String.valueOf(plugin.getCount3265())).build());
+        panelComponent.getChildren().add(LineComponent.builder().left("Difference:").right(String.valueOf(plugin.getCount3266() - plugin.getCount3265())).build());
     }
 }

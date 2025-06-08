@@ -22,8 +22,12 @@ public class SequenceData {
 
     // Your solved sequences
     public static final Map<String, List<Integer>> SEQUENCES = Map.of(
-            "V1", List.of(4, 2, 5, 1, 2),
-            "H1", List.of(8, 6, 5, 9, 2)
+            "V1", List.of(4, 2, 5, 1, 2, 6, 7, 5),
+            "V2", List.of(4, 2, 5, 9, 7, 1, 6, 10, 11, 5),
+            "V3", List.of(4, 2, 5, 1, 2, 5),
+            "H1", List.of(8, 6, 5, 9, 2, 6, 7, 5),
+            "H2", List.of(2, 4, 5, 9, 7, 1, 6, 7, 5),
+            "H3", List.of(8, 6, 5, 9, 2, 5)
             // TODO: Add the rest of your solved sequences here as you figure them out
     );
 

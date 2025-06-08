@@ -37,6 +37,16 @@ public interface ExampleConfig extends Config
 	}
 
 	@ConfigItem(
+			keyName = "useComplexTriggerForTimer",
+			name = "Use Solver Start Condition",
+			description = "Starts the Tick Timer using the same conditions as the Solver (Leviathan + 2 Hands + Meteor).",
+			position = 2
+	)
+	default boolean useComplexTriggerForTimer() {
+		return false;
+	}
+
+	@ConfigItem(
 			keyName = "startingTick",
 			name = "Starting Tick",
 			description = "The tick number the counter will start from when the boss spawns.",
@@ -77,5 +87,49 @@ public interface ExampleConfig extends Config
 	)
 	default boolean startSolverOnMeteor() {
 		return true;
+	}
+
+	@ConfigItem(
+			keyName = "sequenceDelays",
+			name = "Sequence Tick Delays",
+			description = "Define custom delays between sequence steps. Format: {key,delay1,delay2,...},{key,delay1,...}",
+			position = 6
+	)
+	default String sequenceDelays() {
+		return "{V1,4,4,4,4,2},{H1,4,4,4,4,2},{V2,4,4,3,2},{H2,4,4,3,2},{V3,4,4,4,4},{H3,4,4,4,4}"; // e.g., "{V1,2,3,0,2},{H1,4,4,4,4}"
+	}
+
+	@ConfigItem(
+			keyName = "enablePrayerHelper",
+			name = "Enable Prayer Helper",
+			description = "Shows an overlay for the next expected prayer based on boss sounds.",
+			position = 10
+	)
+	default boolean enablePrayerHelper() {
+		return true; // Disabled by default
+	}
+
+	@ConfigItem(
+			keyName = "linkPrayerHelperToSolver",
+			name = "Link Prayer Helper to Solver",
+			description = "If enabled, the prayer helper will only be active when the Sequence Solver is running.",
+			position = 11
+	)
+	default boolean linkPrayerHelperToSolver() {
+		return false;
+	}
+
+	@Range(
+			min = 8,
+			max = 24
+	)
+	@ConfigItem(
+			keyName = "prayerHelperFontSize",
+			name = "Prayer Helper Font Size",
+			description = "Adjusts the size of the text in the Prayer Helper overlay.",
+			position = 12
+	)
+	default int prayerHelperFontSize() {
+		return 16; // Default font size
 	}
 }
