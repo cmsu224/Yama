@@ -99,6 +99,22 @@ public class ExamplePlugin extends Plugin {
 	private static final WorldPoint METEOR_TRIGGER_2 = new WorldPoint(1514, 10079, 0);
 	private static final WorldPoint HIGHLIGHT_TARGET_2 = new WorldPoint(1510, 10077, 0);
 	private static final WorldPoint DELAYED_HIGHLIGHT_TARGET = new WorldPoint(1511, 10079, 0);
+
+	private static final WorldPoint METEOR_TRIGGER_3 = new WorldPoint(1503, 10076, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_3 = new WorldPoint(1504, 10073, 0);
+	private static final WorldPoint METEOR_TRIGGER_4 = new WorldPoint(1506, 10073, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_4 = new WorldPoint(1503, 10072, 0);
+	private static final WorldPoint METEOR_TRIGGER_5 = new WorldPoint(1506, 10071, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_5 = new WorldPoint(1503, 10072, 0);
+	private static final WorldPoint METEOR_TRIGGER_6 = new WorldPoint(1506, 10072, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_6 = new WorldPoint(1503, 10073, 0);
+	private static final WorldPoint METEOR_TRIGGER_7 = new WorldPoint(1505, 10075, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_7 = new WorldPoint(1504, 10072, 0);
+	private static final WorldPoint METEOR_TRIGGER_8 = new WorldPoint(1505, 10070, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_8 = new WorldPoint(1504, 10073, 0);
+	private static final WorldPoint METEOR_TRIGGER_9 = new WorldPoint(1504, 10076, 0);
+	private static final WorldPoint HIGHLIGHT_TARGET_9 = new WorldPoint(1503, 10073, 0);
+
 	private final List<DelayedHighlight> pendingHighlights = new ArrayList<>();
 
 	private int handsSpawnedCounter = 0;
@@ -116,7 +132,7 @@ public class ExamplePlugin extends Plugin {
 		overlayManager.add(tileOverlay);
 		overlayManager.add(counterPanel); // <-- ADD THIS LINE
 		overlayManager.add(prayerHelperOverlay);
-		//overlayManager.add(prayerWidgetOverlay);
+		overlayManager.add(prayerWidgetOverlay);
 		parseTileAndTickData();
 		parseSequenceDelays();
 		for (String sequenceKey : SequenceData.SEQUENCES.keySet()) {
@@ -130,7 +146,7 @@ public class ExamplePlugin extends Plugin {
 		overlayManager.remove(tileOverlay);
 		overlayManager.remove(counterPanel); // <-- ADD THIS LINE
 		overlayManager.remove(prayerHelperOverlay);
-		//overlayManager.remove(prayerWidgetOverlay);
+		overlayManager.remove(prayerWidgetOverlay);
 
 		for (String sequenceKey : SequenceData.SEQUENCES.keySet()) {
 			chatCommandManager.unregisterCommand("!" + sequenceKey.toLowerCase());
@@ -220,7 +236,7 @@ public class ExamplePlugin extends Plugin {
 
 		// If we recognized a sound, start both timers
 		if (soundRecognized) {
-			ticksUntilPrayerSwitch = 4;
+			ticksUntilPrayerSwitch = 3;
 			prayerOverlayMaxTicks = 25;
 		}
 	}
@@ -267,6 +283,20 @@ public class ExamplePlugin extends Plugin {
 			} else if (spawnedLocation.equals(METEOR_TRIGGER_2)) {
 				immediateTarget = HIGHLIGHT_TARGET_2;
 				delay = 5; // Set a 3-tick delay for the second highlight
+			} else if(spawnedLocation.equals(METEOR_TRIGGER_3)) {
+				immediateTarget = HIGHLIGHT_TARGET_3;
+			} else if(spawnedLocation.equals(METEOR_TRIGGER_4)) {
+				immediateTarget = HIGHLIGHT_TARGET_4;
+			} else if(spawnedLocation.equals(METEOR_TRIGGER_5)) {
+				immediateTarget = HIGHLIGHT_TARGET_5;
+			} else if(spawnedLocation.equals(METEOR_TRIGGER_6)) {
+				immediateTarget = HIGHLIGHT_TARGET_6;
+			} else if(spawnedLocation.equals(METEOR_TRIGGER_7)) {
+				immediateTarget = HIGHLIGHT_TARGET_7;
+			} else if(spawnedLocation.equals(METEOR_TRIGGER_8)) {
+				immediateTarget = HIGHLIGHT_TARGET_8;
+			} else if(spawnedLocation.equals(METEOR_TRIGGER_9)) {
+				immediateTarget = HIGHLIGHT_TARGET_9;
 			}
 
 			if (immediateTarget != null) {
@@ -276,8 +306,10 @@ public class ExamplePlugin extends Plugin {
 					highlightedTiles.add(new HighlightedTile(instancedPoint));
 				}
 
-				// Schedule the second highlight to appear after the delay
-				pendingHighlights.add(new DelayedHighlight(DELAYED_HIGHLIGHT_TARGET, delay));
+				if (spawnedLocation.equals(METEOR_TRIGGER_1) || spawnedLocation.equals(METEOR_TRIGGER_2)){
+					// Schedule the second highlight to appear after the delay
+					pendingHighlights.add(new DelayedHighlight(DELAYED_HIGHLIGHT_TARGET, delay));
+				}
 			}
 		}
 
@@ -289,6 +321,9 @@ public class ExamplePlugin extends Plugin {
 
 	@Subscribe
 	public void onGameTick(GameTick event) {
+		if (WorldPoint.fromLocalInstance(client, client.getLocalPlayer().getLocalLocation()).getRegionID() != 6045){
+			resetAllModes();
+		}
 		// Use an iterator to safely remove items while looping
 		Iterator<DelayedHighlight> iterator = pendingHighlights.iterator();
 		while (iterator.hasNext()) {
@@ -366,7 +401,6 @@ public class ExamplePlugin extends Plugin {
 		boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == config.npcId());
 		if (!leviathanPresent) {
 			// If the boss is gone, reset everything and stop.
-			sendChatMessage("Yama not found. Resetting all modes.");
 			resetAllModes();
 			return;
 		}
@@ -424,7 +458,6 @@ public class ExamplePlugin extends Plugin {
 		boolean leviathanPresent = client.getNpcs().stream().anyMatch(npc -> npc.getId() == config.npcId());
 		if (!leviathanPresent) {
 			if (solverActive || isReadyForSequence) {
-				sendChatMessage("Leviathan not found. Resetting solver state.");
 				resetAllModes();
 			}
 			return;
